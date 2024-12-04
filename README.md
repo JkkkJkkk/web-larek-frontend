@@ -90,14 +90,6 @@ yarn build
   ```
   **Возвращает:** `Promise<ApiUser>`
 
-- **updateUser**  
-  Обновляет данные пользователя.  
-  **Пример:**  
-  ```typescript
-  const updatedUser = await apiClient.updateUser("789", userData);
-  ```
-  **Возвращает:** `Promise<ApiUser>`
-
 ## **Компоненты модели данных (бизнес-логика)**
 
 ### **Класс ProductModel**
