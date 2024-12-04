@@ -98,8 +98,6 @@ yarn build
   ```
   **Возвращает:** `Promise<ApiUser>`
 
----
-
 ## **Компоненты модели данных (бизнес-логика)**
 
 ### **Класс ProductModel**
@@ -123,8 +121,6 @@ yarn build
   const product = await productModel.getById("123");
   ```
   **Возвращает:** `Promise<DisplayProduct>`
-
----
 
 ### **Класс CartModel**
 
@@ -160,9 +156,6 @@ yarn build
   ```typescript
   cartModel.clearCart();
   ```
-
----
-
 ### **Класс OrderModel**
 
 Обрабатывает бизнес-логику, связанную с заказами.
@@ -185,8 +178,6 @@ yarn build
   ```
   **Возвращает:** `Promise<DisplayOrder>`
 
----
-
 ## **Компоненты представления**
 
 ### **Компонент ProductCard**
@@ -202,8 +193,6 @@ yarn build
 - **onAddToCart**  
   Обработчик для добавления товара в корзину.  
   **Тип:** `(productId: string) => void`
-
----
 
 ### **Компонент Cart**
 
@@ -223,8 +212,6 @@ yarn build
   Обработчик для оформления заказа.  
   **Тип:** `() => void`
 
----
-
 ### **Компонент Order**
 
 Отображение данных о заказе.
@@ -234,8 +221,6 @@ yarn build
 - **order**  
   Данные заказа.  
   **Тип:** `DisplayOrder`
-
----
 
 ## **Ключевые типы данных**
 
