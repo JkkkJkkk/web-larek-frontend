@@ -288,6 +288,32 @@ yarn build
 - **updateOrderConfirmation(order: DisplayOrder)** — Обновляет информацию о заказе на странице подтверждения.
 - **completeOrder()** — Завершает процесс оформления заказа.
 
+# Взаимодействие между представлением и моделями
+
+## Общий процесс взаимодействия
+
+1. **Загрузка данных с сервера (API)**
+   - Представление, например, `ProductListView`, запрашивает список товаров через `ApiClient.getProducts()`.
+   - Полученные данные передаются в модель, например, в `ProductModel`, где они сохраняются через метод `setProducts()`.
+   - Модель уведомляет представление, что данные обновились, и компонент рендерит эти данные на экране.
+
+2. **Добавление товара в корзину**
+   - Когда пользователь добавляет товар в корзину через компонент `ProductCard`, представление вызывает метод модели `CartModel.addToCart()`.
+   - Модель обновляет список товаров в корзине, и компонент `Cart` получает обновленные данные для рендеринга.
+
+3. **Оформление заказа**
+   - После того как товары добавлены в корзину, представление вызывает метод `OrderModel.prepareOrderData()` для подготовки данных заказа.
+   - Когда пользователь заполняет форму, представление вызывает `OrderModel.setOrderData()` для сохранения данных формы в модели.
+   - При подтверждении заказа данные отправляются на сервер через `ApiClient.createOrder()` и сохраняются в `OrderModel`.
+
+4. **Обновление представления**
+   - Модели данных отправляют уведомления о том, что данные изменились. Представления, такие как `CartView` или `ProductListView`, обновляют UI с новыми данными, вызывая методы обновления (например, `updateCartItems()` или `renderProductList()`).
+
+## Взаимодействие с API
+
+- **ApiClient** обрабатывает все запросы к серверу и использует методы для получения и отправки данных, такие как `getProducts()`, `getProductById()`, `createOrder()`.
+- Модели данных (`ProductModel`, `CartModel`, `OrderModel`) используют эти данные для обновления состояния приложения, и представления обновляют UI на основе этих данных.
+
 ## **Ключевые типы данных**
 
 ### **ApiProduct**+
@@ -340,5 +366,50 @@ interface OrderFormData {
   address: string;
   phone: string;
   [key: string]: string;
+}
+```
+
+### **ApiOrder**
+```typescript
+interface ApiOrder {
+  id: string;
+  products: ApiCartItem[];
+  total: number;
+  status: string;
+}
+```
+
+### **ApiCartItem**
+```typescript
+interface ApiCartItem {
+  productId: string;
+  name: string;
+  quantity: number;
+  price: number; // Для серверных расчетов цена может быть числом
+  totalPrice: number;
+}
+```
+
+### **Cart**
+```typescript
+interface Cart {
+  items: CartItem[];
+  totalPrice: string; // Общая стоимость корзины
+}
+```
+
+### **ProductList**
+```typescript
+interface ProductList {
+  products: DisplayProduct[];
+}
+```
+
+### **CheckoutData**
+```typescript
+interface CheckoutData {
+  order: CartItem[];
+  customer: OrderFormData;
+  totalPrice: string;
 }
 ```
