@@ -82,19 +82,16 @@ yarn build
   ```
   **Возвращает:** `Promise<ApiOrder>`
 
-- **getUser**  
-  Возвращает данные пользователя.  
-  **Пример:**  
-  ```typescript
-  const user = await apiClient.getUser("789");
-  ```
-  **Возвращает:** `Promise<ApiUser>`
-
 ## **Компоненты модели данных (бизнес-логика)**
 
 ### **Класс ProductModel**
 
 Отвечает за бизнес-логику, связанную с товарами.
+
+#### Поле класса:
+
+- products: DisplayProduct[] — массив товаров.
+- product: DisplayProduct | null — конкретный товар для отображения.
 
 #### Методы:
 
@@ -102,9 +99,9 @@ yarn build
   Возвращает список товаров для отображения.  
   **Пример:**  
   ```typescript
-  const products = await productModel.getAll();
+  const products = productModel.getAll();
   ```
-  **Возвращает:** `Promise<DisplayProduct[]>`
+  **Возвращает:** `DisplayProduct[]`
 
 - **getById**  
   Возвращает данные конкретного товара для отображения.  
@@ -112,7 +109,21 @@ yarn build
   ```typescript
   const product = await productModel.getById("123");
   ```
-  **Возвращает:** `Promise<DisplayProduct>`
+  **Возвращает:** `DisplayProduct | undefined`
+
+  - **setProducts**  
+  Метод для записи товаров в модель. 
+  **Пример:**  
+  ```typescript
+  productModel.setProducts(products);
+  ```
+
+  - **setProduct**  
+  Метод для записи данных конкретного товара в модель.
+  **Пример:**  
+  ```typescript
+  productModel.setProduct(product);
+  ```
 
 ### **Класс CartModel**
 
@@ -154,37 +165,40 @@ yarn build
 
 #### Методы:
 
-- **placeOrder**  
-  Создает заказ на основе товаров в корзине.  
+- **prepareOrderData**  
+  Подготавливает данные для создания заказа.  
   **Пример:**  
   ```typescript
-  const order = await orderModel.placeOrder(cartItems);
+  const orderData = orderModel.prepareOrderData(cartItems);
   ```
-  **Возвращает:** `Promise<DisplayOrder>`
 
-- **getOrder**  
-  Получает данные о заказе.  
+- **setOrder**  
+  Метод для записи данных о заказе в модель.
   **Пример:**  
   ```typescript
-  const order = await orderModel.getOrder("456");
+  orderModel.setOrder(orderData);
   ```
-  **Возвращает:** `Promise<DisplayOrder>`
+
+  - **getOrderData**  
+  Возвращает текущие данные о заказе.
+  **Пример:**  
+  ```typescript
+  const orderData = orderModel.getOrderData();
+  ```
 
 ## **Компоненты представления**
 
 ### **Компонент ProductCard**
 
-Карточка товара для отображения на экране.
-
 #### Свойства:
 
-- **product**  
-  Данные товара для отображения.  
-  **Тип:** `DisplayProduct`
+- **product**  - Данные товара для отображения.  **Тип:** `DisplayProduct`
 
-- **onAddToCart**  
-  Обработчик для добавления товара в корзину.  
-  **Тип:** `(productId: string) => void`
+#### Метрды:
+
+- **renderCard()** - Отображает карточку товара на экране (название, изображение, цена и описание).
+- **updateCard(product: DisplayProduct)** - Обновляет информацию о товаре в карточке.
+- **setAddToCartHandler(handler: (productId: string) => void)** - станавливает обработчик для события добавления товара в корзину.
 
 ### **Компонент Cart**
 
@@ -206,13 +220,31 @@ yarn build
 
 ### **Компонент Order**
 
-Отображение данных о заказе.
+### **Класс OrderSummary**
+
+Отвечает за отображение сводной информации о заказе.
 
 #### Свойства:
 
-- **order**  
-  Данные заказа.  
-  **Тип:** `DisplayOrder`
+- **order**  - Данные заказа.  **Тип:** `DisplayOrder`
+
+#### Метрды:
+
+- **renderSummary()** - Отображает сводную информацию о заказе (список товаров, общая сумма, статус).
+- **updateSummary(order: DisplayOrder)** - Обновляет информацию о заказе на экране.
+
+### **Класс OrderForm**
+
+Отвечает за отображение формы оформления заказа.
+
+#### Свойства:
+
+- **formElement**  - DOM-элемент формы.  **Тип:** `HTMLFormElement`
+
+#### Метрды:
+
+- **renderForm()** - Рендерит форму заказа (поля для ввода имени, адреса, телефона и т.д.).
+- **getFormData()** - Возвращает введенные данные для отправки на сервер. **Тип:** `OrderFormData`
 
 ## **Ключевые типы данных**
 
@@ -256,5 +288,15 @@ interface DisplayOrder {
   products: CartItem[];
   total: string;
   status: string;
+}
+```
+
+### **OrderFormData**
+```typescript
+interface OrderFormData {
+  name: string;
+  address: string;
+  phone: string;
+  [key: string]: string;
 }
 ```
