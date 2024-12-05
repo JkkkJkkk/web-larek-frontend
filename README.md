@@ -84,106 +84,99 @@ yarn build
 
 ## **Компоненты модели данных (бизнес-логика)**
 
-### **Класс ProductModel**
-
+## **Класс ProductModel**
 Отвечает за бизнес-логику, связанную с товарами.
 
-#### Поле класса:
+### **Поля**
+- `products: DisplayProduct[]` — массив товаров.
+- `product: DisplayProduct | null` — конкретный товар для отображения.
 
-- products: DisplayProduct[] — массив товаров.
-- product: DisplayProduct | null — конкретный товар для отображения.
-
-#### Методы:
-
-- **getAll**  
-  Возвращает список товаров для отображения.  
-  **Пример:**  
-  ```typescript
-  const products = productModel.getAll();
-  ```
-  **Возвращает:** `DisplayProduct[]`
-
-- **getById**  
-  Возвращает данные конкретного товара для отображения.  
-  **Пример:**  
-  ```typescript
-  const product = await productModel.getById("123");
-  ```
-  **Возвращает:** `DisplayProduct | undefined`
-
-- **setProducts**  
-  Метод для записи товаров в модель. 
-  **Пример:**  
+### **Методы**
+- **`setProducts(products: DisplayProduct[]): void`**  
+  Сохраняет список товаров в модель.  
   ```typescript
   productModel.setProducts(products);
   ```
 
-- **setProduct**  
-  Метод для записи данных конкретного товара в модель.
-  **Пример:**  
+- **`setProduct(product: DisplayProduct | null): void`**  
+  Сохраняет данные конкретного товара в модель.  
   ```typescript
   productModel.setProduct(product);
   ```
 
-### **Класс CartModel**
+- **`getAll(): DisplayProduct[]`**  
+  Возвращает список всех товаров из модели.  
+  ```typescript
+  const allProducts = productModel.getAll();
+  ```
 
+- **`getById(id: string): DisplayProduct | undefined`**  
+  Возвращает данные конкретного товара по его идентификатору.  
+  ```typescript
+  const product = productModel.getById("123");
+  ```
+
+## **Класс CartModel**
 Реализует бизнес-логику для работы с корзиной.
 
-#### Методы:
+### **Поля**
+- `cartItems: CartItem[]` — список товаров в корзине.
 
-- **addToCart**  
+### **Методы**
+- **`addToCart(productId: string, quantity: number): void`**  
   Добавляет товар в корзину.  
-  **Пример:**  
   ```typescript
   cartModel.addToCart("123", 2);
   ```
 
-- **removeFromCart**  
+- **`removeFromCart(productId: string): void`**  
   Удаляет товар из корзины.  
-  **Пример:**  
   ```typescript
   cartModel.removeFromCart("123");
   ```
 
-- **getCartItems**  
+- **`getCartItems(): CartItem[]`**  
   Возвращает список товаров в корзине.  
-  **Пример:**  
   ```typescript
   const items = cartModel.getCartItems();
   ```
-  **Возвращает:** `CartItem[]`
 
-- **clearCart**  
+- **`clearCart(): void`**  
   Очищает корзину.  
-  **Пример:**  
   ```typescript
   cartModel.clearCart();
   ```
-### **Класс OrderModel**
 
+## **Класс OrderModel**
 Обрабатывает бизнес-логику, связанную с заказами.
 
-#### Методы:
+### **Поля**
+- `order: DisplayOrder | null` — текущий заказ.
+- `orderData: OrderFormData | null` — данные для создания нового заказа.
 
-- **prepareOrderData**  
-  Подготавливает данные для создания заказа.  
-  **Пример:**  
+### **Методы**
+- **`setOrder(order: DisplayOrder): void`**  
+  Сохраняет данные о заказе в модель.  
+  ```typescript
+  orderModel.setOrder(order);
+  ```
+
+- **`getOrder(): DisplayOrder | null`**  
+  Возвращает текущий заказ.  
+  ```typescript
+  const order = orderModel.getOrder();
+  ```
+
+- **`prepareOrderData(cartItems: CartItem[]): OrderFormData`**  
+  Подготавливает данные для отправки заказа.  
   ```typescript
   const orderData = orderModel.prepareOrderData(cartItems);
   ```
 
-- **setOrder**  
-  Метод для записи данных о заказе в модель.
-  **Пример:**  
+- **`setOrderData(orderData: OrderFormData): void`**  
+  Сохраняет данные для нового заказа.  
   ```typescript
-  orderModel.setOrder(orderData);
-  ```
-
-- **getOrderData**  
-  Возвращает текущие данные о заказе.
-  **Пример:**  
-  ```typescript
-  const orderData = orderModel.getOrderData();
+  orderModel.setOrderData(orderData);
   ```
 
 ## **Компоненты представления**
