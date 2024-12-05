@@ -111,14 +111,14 @@ yarn build
   ```
   **Возвращает:** `DisplayProduct | undefined`
 
-  - **setProducts**  
+- **setProducts**  
   Метод для записи товаров в модель. 
   **Пример:**  
   ```typescript
   productModel.setProducts(products);
   ```
 
-  - **setProduct**  
+- **setProduct**  
   Метод для записи данных конкретного товара в модель.
   **Пример:**  
   ```typescript
@@ -179,7 +179,7 @@ yarn build
   orderModel.setOrder(orderData);
   ```
 
-  - **getOrderData**  
+- **getOrderData**  
   Возвращает текущие данные о заказе.
   **Пример:**  
   ```typescript
