@@ -1,6 +1,6 @@
 import { Component } from './base/Component';
 import { ensureElement } from '../utils/utils';
-import { Events } from './base/Events';
+import { Events } from './base/events';
 
 interface IPage {
 	catalog: HTMLElement[];

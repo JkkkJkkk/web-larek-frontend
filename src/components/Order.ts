@@ -1,6 +1,6 @@
 import { Form } from './common/Form';
 import { OrderFormData } from '../types';
-import { Events } from './base/Events';
+import { Events } from './base/events';
 import { ensureAllElements } from '../utils/utils';
 
 export class Order extends Form<OrderFormData> {

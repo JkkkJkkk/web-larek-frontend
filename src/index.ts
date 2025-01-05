@@ -2,7 +2,7 @@ import './scss/styles.scss';
 import { Basket } from './components/Basket';
 import { Modal } from './components/common/Modal';
 import { Success } from './components/Success';
-import { EventEmitter } from './components/base/Events';
+import { EventEmitter } from './components/base/events';
 import { ApiLarek } from './components/Api';
 import { AppData, Product } from './components/AppData';
 import { Card, CardBasket, CardPreview } from './components/Card';

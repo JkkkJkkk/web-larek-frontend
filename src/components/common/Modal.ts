@@ -1,6 +1,6 @@
 import { ensureElement } from '../../utils/utils';
 import { Component } from '../base/Component';
-import { Events } from '../base/Events';
+import { Events } from '../base/events';
 
 interface ModalData {
 	content: HTMLElement;
