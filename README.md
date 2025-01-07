@@ -49,49 +49,55 @@ yarn build
 
 ## **Базовый код**
 
-### **Класс ApiClient**
+### EventEmitter
 
-Класс, отвечающий за взаимодействие с серверным API. Реализует методы получения и отправки данных.
+Класс для работы с событиями, обеспечивающий гибкую подписку, отписку, и обработку данных событий. Помимо стандартной функциональности, поддерживает подписку на все события или события, подходящие под заданный шаблон.
 
 #### Методы:
 
-- **getProducts**  
-  Возвращает список товаров.  
-  **Пример:**
+- **on(eventName: EventName, callback: (event: T) => void): void**
+  Подписывает на событие с заданным именем.  
+  **Параметр:**
+- `eventName`- Имя события для подписки.
+- `callback`- Функция, выполняемая при возникновении события.
 
-  ```typescript
-  const products = await apiClient.getProducts();
-  ```
+- **off(eventName: EventName, callback: Subscriber): void**
+  Отписывает от события.
 
-  **Возвращает:** `Promise<ApiProduct[]>`
+- **emit(eventName: string, data?: T): void**
+  Инициирует событие с переданными данными.  
+  **Параметр:**
+- `data`- Данные, передаваемые обработчикам события.
 
-- **getProductById**  
-  Получает данные товара по идентификатору.  
-  **Пример:**
+- **onAll(callback: (event: EmitterEvent) => void): void**
+  Подписывается на все события.
 
-  ```typescript
-  const product = await apiClient.getProductById('123');
-  ```
+- **`offAll(): void**
+  Снимает все обработчики событий.
 
-  **Возвращает:** `Promise<ApiProduct>`
+- **trigger(eventName: string, context?: Partial<T>): void**
+  Создает триггер для события с возможностью указания контекста.  
+  **Параметр:**
+- `context`- Контекст для события при инициации.
 
-- **createOrder**  
-  Создает новый заказ.  
-  **Пример:**
+### Api
 
-  ```typescript
-  const order = await apiClient.createOrder(orderData);
-  ```
+Класс для выполнения HTTP-запросов к API. Поддерживает базовые операции взаимодействия с сервером, включая отправку, обновление, получение и удаление данных.
 
-  **Возвращает:** `Promise<ApiOrder>`
+#### Методы:
 
-- **getOrderById**  
-  Возвращает данные заказа.  
-  **Пример:**
-  ```typescript
-  const order = await apiClient.getOrderById('456');
-  ```
-  **Возвращает:** `Promise<ApiOrder>`
+- **get(url: string): Promise<object>**
+  Выполняет GET-запрос по указанному URI относительно `baseUrl`. Возвращает `Promise` с результатами ответа.
+
+- **post(url: string, data: object, method: ApiPostMethods = 'POST'): Promise<object>**
+  Выполняет запрос с методами `POST`, `PUT` или `DELETE`.  
+  **Параметры:**
+- `url` (string): URI ресурса.
+- `data` (object): Данные для отправки в теле запроса.
+- `method` (ApiPostMethods): HTTP-метод (по умолчанию — `POST`).
+
+- **handleResponse(response: Response): Promise<object>**
+  Обрабатывает ответ от сервера. Возвращает `Promise` с результатом в формате JSON при успешном ответе или с ошибкой/статусом при неудаче.
 
 ## **Компоненты модели данных (бизнес-логика)**
 
@@ -444,3 +450,85 @@ interface OrderResult {
 }
 ```
 
+### **FormState**
+
+```typescript
+interface FormState {
+	valid: boolean;
+	errors: string[];
+}
+```
+
+### **ModalData**
+
+```typescript
+interface ModalData {
+	content: HTMLElement;
+}
+```
+
+### **IBasket**
+
+```typescript
+interface IBasket {
+	items: HTMLElement[];
+	totalAmount: number;
+}
+```
+
+### **ICard**
+
+```typescript
+interface ICard {
+	id: string;
+	description: string;
+	selected: boolean;
+	title: string;
+	category: string;
+	image: string;
+	price: number;
+	text: string;
+}
+```
+
+### **ICardBasket**
+
+```typescript
+interface ICardBasket {
+	title: string;
+	price: number;
+	index: number;
+}
+```
+
+### **ICardPreview**
+
+```typescript
+interface ICardPreview {
+	text: string;
+}
+```
+
+### **IPage**
+
+```typescript
+interface IPage {
+	catalog: HTMLElement[];
+}
+```
+
+### **ISuccess**
+
+```typescript
+interface ISuccess {
+	total: number;
+}
+```
+
+### **CategoryClassNames**
+
+```typescript
+interface CategoryClassNames {
+	[categoryName: string]: string;
+}
+```

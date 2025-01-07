@@ -4,6 +4,7 @@ import {
 	Order,
 	OrderFormData,
 	FormErrors,
+	Product,
 } from '../types';
 import { Model } from '../components/base/Model';
 
@@ -22,12 +23,15 @@ export class AppData extends Model<AppState> {
 	formErrors: FormErrors = {};
 
 	clearBasket() {
+		this.basket.forEach((item) => (item.selected = false));
 		this.basket = [];
 		this.order.items = [];
+		this.emitChanges('basket:cleared', { basket: this.basket });
 	}
 
 	addToBasket(product: Product) {
 		this.basket.push(product);
+		this.emitChanges('basket:change', { basket: this.basket });
 	}
 
 	removeFromBasket(product: Product) {
@@ -49,7 +53,10 @@ export class AppData extends Model<AppState> {
 	}
 
 	setCatalog(items: DisplayProduct[]) {
-		this.catalog = items.map((item) => new Product(item, this.events));
+		this.catalog = items.map((item) => ({
+			...item,
+			selected: false,
+		}));
 		this.emitChanges('items:changed', { catalog: this.catalog });
 	}
 
@@ -120,26 +127,5 @@ export class AppData extends Model<AppState> {
 		this.formErrors = errors;
 		this.events.emit('formErrors:change', this.formErrors);
 		return Object.keys(errors).length === 0;
-	}
-}
-
-export class Product extends Model<DisplayProduct> {
-	id: string;
-	title: string;
-	description: string;
-	category: string;
-	image: string;
-	price: number | null;
-	selected: boolean;
-
-	constructor(item: DisplayProduct, events: any) {
-		super(item, events);
-		this.id = item.id;
-		this.title = item.title;
-		this.description = item.description;
-		this.category = item.category;
-		this.image = item.image;
-		this.price = item.price;
-		this.selected = false;
 	}
 }

@@ -4,11 +4,11 @@ import { Modal } from './components/common/Modal';
 import { Success } from './components/Success';
 import { EventEmitter } from './components/base/events';
 import { ApiLarek } from './components/Api';
-import { AppData, Product } from './components/AppData';
+import { AppData } from './components/AppData';
 import { Card, CardBasket, CardPreview } from './components/Card';
 import { Page } from './components/Page';
 import { Order, Сontacts } from './components/Order';
-import { OrderFormData } from './types';
+import { OrderFormData, Product } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { cloneTemplate, ensureElement } from './utils/utils';
 
@@ -77,63 +77,50 @@ eventEmitter.on('card:select', (item: Product) => {
 	});
 });
 
-eventEmitter.on('card:addToBasket', (item: Product) => {
-	appData.addToOrder(item);
-	item.selected = true;
-	appData.setProductToBasket(item);
+eventEmitter.on('basket:change', () => {
+	basket.setDisabled(basket.button, appData.statusBasket);
+	basket.totalAmount = appData.getTotal();
+
+	let index = 1;
+	basket.items = appData.bskt.map((item) =>
+		new CardBasket(cloneTemplate(templates.cardBasket), {
+			onClick: () => eventEmitter.emit('basket:removeFromBasket', item),
+		}).render({
+			title: item.title,
+			price: item.price,
+			index: index++,
+		})
+	);
+
 	page.counter = appData.bskt.length;
-	modal.close();
+});
+
+eventEmitter.on('basket:cleared', () => {
+	basket.items = [];
+	basket.totalAmount = 0;
+	page.counter = 0;
 });
 
 eventEmitter.on('basket:removeFromBasket', (item: Product) => {
 	appData.removeProductFromBasket(item);
 	item.selected = false;
 	appData.removeFromOrder(item);
-	page.counter = appData.bskt.length;
-	basket.setDisabled(basket.button, appData.statusBasket);
-	basket.totalAmount = appData.getTotal();
-	let index = 1;
-	basket.items = appData.bskt.map((item) =>
-		new CardBasket(cloneTemplate(templates.cardBasket), {
-			onClick: () => eventEmitter.emit('basket:removeFromBasket', item),
-		}).render({
-			title: item.title,
-			price: item.price,
-			index: index++,
-		})
-	);
-	modal.render({ content: basket.render() });
-});
 
-eventEmitter.on('preview:changed', (item: Product) => {
-	const previewCard = new CardPreview(cloneTemplate(templates.cardPreview), {
-		onClick: () => eventEmitter.emit('card:add', item),
-	});
-	modal.render({
-		content: previewCard.render({
-			title: item.title,
-			text: item.description,
-			category: item.category,
-			image: api.cdn + item.image,
-			price: item.price,
-		}),
-	});
+	eventEmitter.emit('basket:change');
 });
 
 eventEmitter.on('basket:open', () => {
-	basket.setDisabled(basket.button, appData.statusBasket);
-	basket.totalAmount = appData.getTotal();
-	let index = 1;
-	basket.items = appData.bskt.map((item) =>
-		new CardBasket(cloneTemplate(templates.cardBasket), {
-			onClick: () => eventEmitter.emit('basket:removeFromBasket', item),
-		}).render({
-			title: item.title,
-			price: item.price,
-			index: index++,
-		})
-	);
+	eventEmitter.emit('basket:change');
 	modal.render({ content: basket.render() });
+});
+
+eventEmitter.on('card:addToBasket', (item: Product) => {
+	appData.addToOrder(item);
+	item.selected = true;
+	appData.setProductToBasket(item);
+	page.counter = appData.bskt.length;
+	eventEmitter.emit('basket:change');
+	modal.close();
 });
 
 eventEmitter.on(
@@ -192,11 +179,10 @@ eventEmitter.on('contacts:submit', () => {
 	api
 		.orderProducts(appData.order)
 		.then(() => {
+			appData.clearBasket();
 			const success = new Success(cloneTemplate(templates.success), {
 				onClick: () => {
 					modal.close();
-					appData.clearBasket();
-					page.counter = appData.bskt.length;
 				},
 			});
 			modal.render({
