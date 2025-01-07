@@ -176,6 +176,7 @@ eventEmitter.on('modal:open', () => (page.locked = true));
 eventEmitter.on('modal:close', () => (page.locked = false));
 
 eventEmitter.on('contacts:submit', () => {
+	const totalAmount = appData.getTotal();
 	api
 		.orderProducts(appData.order)
 		.then(() => {
@@ -186,7 +187,7 @@ eventEmitter.on('contacts:submit', () => {
 				},
 			});
 			modal.render({
-				content: success.render({ total: appData.getTotal() }),
+				content: success.render({ total: totalAmount }),
 			});
 		})
 		.catch(console.error);
